@@ -1,0 +1,78 @@
+###test api
+GET http://localhost:5000/test
+
+###register user
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Harish",
+  "email": "harish@gmail.com",
+  "phone": "1234567890",
+  "password": "123456",
+  "role": "SHOPKEEPER"
+}
+
+###login 
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "email": "harish@gmail.com",
+    "password": "123456"
+}
+
+
+###customer login 
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email":"suresh@gmail.com",
+  "password":"123456"
+}
+###logout 
+POST http://localhost:5000/auth/logout
+
+###test auth 
+GET http://localhost:5000/test/protected
+
+
+###create customer
+POST http://localhost:5000/customer/create
+Content-Type: application/json
+
+{
+  "name": "Suresh",
+  "email": "suresh@gmail.com",
+  "password": "123456",
+  "phone": "9876543210",
+  "role": "CUSTOMER"
+}
+
+###get all customers
+GET http://localhost:5000/customer/all
+
+
+###add transaction
+POST http://localhost:5000/transaction/add
+Content-Type: application/json
+
+{
+  "customerId": "6a0bfe070bf20e905a1cba18",
+  "type": "CREDIT",
+  "amount": 700,
+  "note": "Rice and Oil"
+}
+
+###get transactions for a customer
+GET http://localhost:5000/transaction/6a0bfe070bf20e905a1cba18
+
+###get my profile
+GET http://localhost:5000/dashboard/me
+
+###get my transactions
+GET http://localhost:5000/dashboard/transactions
+
+###get my customers
+GET http://localhost:5000/dashboard/shopkeeper
