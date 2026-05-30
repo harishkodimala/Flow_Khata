@@ -19,7 +19,7 @@ Content-Type: application/json
 
 {
     "email": "harish@gmail.com",
-    "password": "123456"
+    "password": "12345678"
 }
 
 
@@ -28,9 +28,10 @@ POST http://localhost:5000/auth/login
 Content-Type: application/json
 
 {
-  "email":"suresh@gmail.com",
-  "password":"123456"
+  "email":"24eg505g03@anurag.edu.in",
+  "password":"50ppj7h4"
 }
+
 ###logout 
 POST http://localhost:5000/auth/logout
 
@@ -43,15 +44,28 @@ POST http://localhost:5000/customer/create
 Content-Type: application/json
 
 {
-  "name": "Suresh",
-  "email": "suresh@gmail.com",
-  "password": "123456",
-  "phone": "9876543210",
-  "role": "CUSTOMER"
+  "name": "upendar",
+  "email": "upendar@gmail.com",
+  "phone": "9832619482"
 }
+
+###change password
+PUT http://localhost:5000/auth/change-password
+Content-Type: application/json
+
+{
+  "newPassword":"12345678"
+}
+
+
 
 ###get all customers
 GET http://localhost:5000/customer/all
+
+
+###get customer by id
+GET http://localhost:5000/customer/get/6a0bfe070bf20e905a1cba18
+
 
 
 ###add transaction
@@ -59,14 +73,18 @@ POST http://localhost:5000/transaction/add
 Content-Type: application/json
 
 {
-  "customerId": "6a0bfe070bf20e905a1cba18",
-  "type": "CREDIT",
-  "amount": 700,
-  "note": "Rice and Oil"
+  "customerId":"6a1a673fcaa822fa0197a332",
+  "type":"DEBIT",
+  "amount":1000,
+  "note":"Rice Purchase",
+  "dueDate":"2026-06-30"
 }
 
 ###get transactions for a customer
 GET http://localhost:5000/transaction/6a0bfe070bf20e905a1cba18
+
+
+
 
 ###get my profile
 GET http://localhost:5000/dashboard/me
@@ -76,3 +94,54 @@ GET http://localhost:5000/dashboard/transactions
 
 ###get my customers
 GET http://localhost:5000/dashboard/shopkeeper
+
+
+###get profile
+GET http://localhost:5000/settings/profile
+
+###update profile
+PUT http://localhost:5000/settings/profile
+Content-Type: application/json
+
+{
+  "name": "Harish Kumar",
+  "phone": "9876543210"
+}
+
+
+###change password
+PUT http://localhost:5000/settings/change-password
+Content-Type: application/json
+
+{
+  "currentPassword": "123456",
+  "newPassword": "12345678"
+}
+
+
+###update customer
+PUT http://localhost:5000/customer/update/6a197da5c67bfe25f7e2ca3c
+Content-Type: application/json
+
+{
+  "name": "Upendar Reddy",
+  "email": "upendar.reddy@gmail.com",
+  "phone": "9876543210"
+}
+
+
+###delete customer
+DELETE http://localhost:5000/customer/delete/6a197da5c67bfe25f7e2ca3c
+
+
+###resend credentials
+POST http://localhost:5000/customer/resend-credentials/6a1a673fcaa822fa0197a332
+
+###send statement
+POST http://localhost:5000/customer/send-statement/6a1a673fcaa822fa0197a332
+
+###settle customer
+POST http://localhost:5000/customer/settle/6a1a673fcaa822fa0197a332
+
+###customer test api
+GET http://localhost:5000/customer/test

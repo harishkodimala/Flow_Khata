@@ -95,12 +95,24 @@ export const loginUser = async (req, res) => {
   console.log("UserObj from authenitcate :", userObj)
    delete userObj.password;
    res.cookie("token", token, {
-  httpOnly: true,
-  sameSite: "lax",
-  secure: false,
-  maxAge: 5 * 24 * 60 * 60 * 1000
-});
 
+  httpOnly: true,
+
+  secure:
+    process.env.NODE_ENV ===
+    "production",
+
+  sameSite:
+    process.env.NODE_ENV ===
+    "production"
+      ? "none"
+      : "lax",
+
+  maxAge:
+    5 * 24 * 60 * 60 * 1000
+
+});
+console.log(userObj);
     res.status(200).json({
       message: "Login successful",
       user: userObj
@@ -123,13 +135,19 @@ export const logoutUser = async (req, res) => {
 
         res.clearCookie("token", {
 
-            httpOnly: true,
+  httpOnly: true,
 
-            secure: false,
+  secure:
+    process.env.NODE_ENV ===
+    "production",
 
-            sameSite: "lax"
+  sameSite:
+    process.env.NODE_ENV ===
+    "production"
+      ? "none"
+      : "lax"
 
-        });
+});
 
         res.status(200).json({
 
@@ -146,5 +164,46 @@ export const logoutUser = async (req, res) => {
         });
 
     }
+
+};
+
+export const changePassword = async (req, res) => {
+
+  try {
+
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+
+      return res.status(400).json({
+        message: "New password is required"
+      });
+
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        password: hashedPassword,
+        mustChangePassword: false
+      }
+    );
+
+    res.status(200).json({
+      message: "Password updated successfully"
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
 
 };

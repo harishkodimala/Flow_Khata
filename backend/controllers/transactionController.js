@@ -7,46 +7,101 @@ export const addTransaction = async (req, res) => {
   try {
 
     const {
+
       customerId,
+
       type,
+
       amount,
-      note
+
+      note,
+
+      dueDate
+
     } = req.body;
 
-    // Find customer
-    const customer = await User.findById(customerId);
+    const customer =
+      await User.findById(
+        customerId
+      );
 
     if (!customer) {
 
       return res.status(404).json({
-        message: "Customer not found"
+
+        message:
+          "Customer not found"
+
       });
 
     }
+    if (
+  type === "CREDIT" &&
+  dueDate
+) {
 
-    // Create transaction
-    const transaction = await Transaction.create({
+  const today =
+    new Date();
 
-      customer: customerId,
+  today.setHours(
+    0, 0, 0, 0
+  );
 
-      shopkeeper: req.user.id,
+  const selectedDate =
+    new Date(dueDate);
 
-      type,
+  selectedDate.setHours(
+    0, 0, 0, 0
+  );
 
-      amount,
+  if (
+    selectedDate < today
+  ) {
 
-      note
+    return res.status(400).json({
+
+      message:
+        "Due date cannot be in the past"
 
     });
 
-    // Update balance
+  }
+
+}
+
+    const transaction =
+      await Transaction.create({
+
+        customer:
+          customerId,
+
+        shopkeeper:
+          req.user.id,
+
+        type,
+
+        amount,
+
+        note,
+
+        dueDate:
+          type === "CREDIT"
+            ? dueDate
+            : null
+
+      });
+
     if (type === "CREDIT") {
 
-      customer.currentBalance += amount;
+      customer.currentBalance +=
+        amount;
 
-    } else if (type === "DEBIT") {
+    } else if (
+      type === "DEBIT"
+    ) {
 
-      customer.currentBalance -= amount;
+      customer.currentBalance -=
+        amount;
 
     }
 
@@ -54,18 +109,23 @@ export const addTransaction = async (req, res) => {
 
     res.status(201).json({
 
-      message: "Transaction added",
+      message:
+        "Transaction added",
 
       transaction,
 
-      currentBalance: customer.currentBalance
+      currentBalance:
+        customer.currentBalance
 
     });
 
   } catch (error) {
 
     res.status(500).json({
-      message: error.message
+
+      message:
+        error.message
+
     });
 
   }

@@ -35,9 +35,14 @@ const userSchema = new Schema({
   createdBy: {
    type: Schema.Types.ObjectId,
    ref: "User"
-}
+},
+mustChangePassword: {
+  type: Boolean,
+  default: false
+},
 
-}, {
+},
+ {
   timestamps: true,
   strict: "throw",
   versionKey: false
