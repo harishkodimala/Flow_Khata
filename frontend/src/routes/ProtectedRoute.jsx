@@ -1,56 +1,82 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
-import { useAuth } from "../store/authStore";
+import { useAuth } from "../store/authStore.js";
+import Loader from "../layouts/Loader.jsx";
 
 function ProtectedRoute({
 
     children,
 
-    allowedRole
+    allowedRoles = []
 
 }) {
 
     const {
 
-        user,
-
         isAuthenticated,
 
-        loading
+        user,
+
+        initialized
 
     } = useAuth();
 
-    // Loading state
-    if (loading) {
+    const location = useLocation();
+
+    
+
+    // Not logged in
+    if (!isAuthenticated) {
+
+        return <Navigate to="/login" replace />;
+
+    }
+
+    /*
+    =========================
+    FORCE PASSWORD CHANGE
+    =========================
+    */
+
+    if (
+
+        user?.role === "CUSTOMER" &&
+
+        user?.mustChangePassword &&
+
+        location.pathname !== "/customer/change-password"
+
+    ) {
 
         return (
 
-            <div className="h-screen flex items-center justify-center">
+            <Navigate
 
-                <h1 className="text-2xl font-bold">
-                    Loading...
-                </h1>
+                to="/customer/change-password"
 
-            </div>
+                replace
+
+            />
 
         );
 
     }
 
-    // Not logged in
-    if (!isAuthenticated) {
+    /*
+    =========================
+    ROLE CHECK
+    =========================
+    */
 
-        return <Navigate to="/" />;
-
-    }
-
-    // Wrong role
     if (
-        allowedRole &&
-        user?.role !== allowedRole
+
+        allowedRoles.length > 0 &&
+
+        !allowedRoles.includes(user?.role)
+
     ) {
 
-        return <Navigate to="/"  />;
+        return <Navigate to="/" replace />;
 
     }
 

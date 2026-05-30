@@ -1,271 +1,1008 @@
 import { useEffect, useState } from "react";
-
-import { useCustomerStore } from "../../store/customerStore";
-
-import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
+import { api } from "../../api/axios";
+import toast from "react-hot-toast";
+import Loader from "../../layouts/Loader";
+import { FaWhatsapp } from "react-icons/fa";
 
 function Customers() {
 
-    const navigate = useNavigate();
+  const [customers, setCustomers] =
+    useState([]);
 
-    const {
+  const [filteredCustomers, setFilteredCustomers] =
+    useState([]);
 
-        customers,
+  const [loading, setLoading] =
+    useState(true);
 
-        fetchCustomers,
+  const [creatingCustomer, setCreatingCustomer] =
+    useState(false);
 
-        createCustomer,
+  const [updatingCustomer, setUpdatingCustomer] =
+    useState(false);
 
-        loading
+  const [deletingCustomer, setDeletingCustomer] =
+    useState(null);
 
-    } = useCustomerStore();
+  const [resendingCustomer, setResendingCustomer] =
+  useState(null);
 
+  const [editingCustomer, setEditingCustomer] =
+    useState(null);
+  
+  const [sendingStatement, setSendingStatement] =
+    useState(null);
+  const [settlingCustomer, setSettlingCustomer] =
+    useState(null);
 
-    const [formData, setFormData] = useState({
+  const [search, setSearch] =
+    useState("");
+
+  const [formData, setFormData] =
+    useState({
+
+      name: "",
+
+      email: "",
+
+      phone: ""
+
+    });
+
+  const [editForm, setEditForm] =
+    useState({
+
+      name: "",
+
+      phone: ""
+
+    });
+
+  const fetchCustomers = async () => {
+
+    try {
+
+      const response =
+        await api.get(
+          "/customer/all"
+        );
+
+      setCustomers(
+        response.data.customers
+      );
+
+      setFilteredCustomers(
+        response.data.customers
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error(
+        "Failed to fetch customers"
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+  useEffect(() => {
+
+    fetchCustomers();
+
+  }, []);
+
+  useEffect(() => {
+
+    const filtered =
+      customers.filter(
+
+        (customer) =>
+
+          customer.name
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            ) ||
+
+          customer.email
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            ) ||
+
+          customer.phone
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            )
+
+      );
+
+    setFilteredCustomers(
+      filtered
+    );
+
+  }, [search, customers]);
+
+  const handleChange = (e) => {
+
+    setFormData({
+
+      ...formData,
+
+      [e.target.name]:
+        e.target.value
+
+    });
+
+  };
+
+  const handleAddCustomer = async (e) => {
+
+    e.preventDefault();
+
+    if (!formData.name.trim()) {
+
+      toast.error(
+        "Customer name is required"
+      );
+
+      return;
+
+    }
+
+    if (!formData.email.trim()) {
+
+      toast.error(
+        "Email is required"
+      );
+
+      return;
+
+    }
+
+    if (!formData.email.includes("@")) {
+
+      toast.error(
+        "Enter a valid email"
+      );
+
+      return;
+
+    }
+
+    if (!formData.phone.trim()) {
+
+      toast.error(
+        "Phone number is required"
+      );
+
+      return;
+
+    }
+
+    try {
+
+      setCreatingCustomer(
+        true
+      );
+
+      const response =
+        await api.post(
+          "/customer/create",
+          {
+            name:
+              formData.name.trim(),
+
+            email:
+              formData.email.trim(),
+
+            phone:
+              formData.phone.trim()
+
+          }
+        );
+
+      toast.success(
+        response.data.message
+      );
+
+      if (
+        response.data
+          .temporaryPassword
+      ) {
+
+        toast(
+          `Temporary Password: ${response.data.temporaryPassword}`,
+          {
+            duration: 15000
+          }
+        );
+
+      }
+
+      setFormData({
 
         name: "",
 
         email: "",
 
-        password: "",
-
         phone: ""
 
-    });
+      });
 
+      fetchCustomers();
 
-    useEffect(() => {
+    } catch (error) {
+
+      toast.error(
+
+        error?.response?.data
+          ?.message ||
+
+        "Failed to create customer"
+
+      );
+
+    } finally {
+
+      setCreatingCustomer(
+        false
+      );
+
+    }
+
+  };
+
+  const handleEditClick =
+    (customer) => {
+
+      setEditingCustomer(
+        customer
+      );
+
+      setEditForm({
+
+        name:
+          customer.name,
+
+        phone:
+          customer.phone
+
+      });
+
+    };
+
+  const handleUpdateCustomer =
+    async (e) => {
+
+      e.preventDefault();
+
+      try {
+
+        setUpdatingCustomer(
+          true
+        );
+
+        const response =
+          await api.put(
+
+            `/customer/update/${editingCustomer._id}`,
+
+            {
+
+              name:
+                editForm.name,
+
+              phone:
+                editForm.phone
+
+            }
+
+          );
+
+        toast.success(
+          response.data.message
+        );
+
+        setEditingCustomer(
+          null
+        );
 
         fetchCustomers();
 
-    }, []);
+      } catch (error) {
 
+        toast.error(
 
-    const handleChange = (e) => {
+          error?.response?.data
+            ?.message ||
 
-        setFormData({
+          "Update failed"
 
-            ...formData,
+        );
 
-            [e.target.name]: e.target.value
+      } finally {
 
-        });
+        setUpdatingCustomer(
+          false
+        );
+
+      }
+
+    };
+
+  const handleDeleteCustomer =
+    async (customerId) => {
+
+      const confirmDelete =
+        window.confirm(
+          "Delete this customer?"
+        );
+
+      if (!confirmDelete)
+        return;
+
+      try {
+
+        setDeletingCustomer(
+          customerId
+        );
+
+        const response =
+          await api.delete(
+
+            `/customer/delete/${customerId}`
+
+          );
+
+        toast.success(
+          response.data.message
+        );
+
+        fetchCustomers();
+
+      } catch (error) {
+
+        toast.error(
+
+          error?.response?.data
+            ?.message ||
+
+          "Delete failed"
+
+        );
+
+      } finally {
+
+        setDeletingCustomer(
+          null
+        );
+
+      }
 
     };
 
 
-    const handleSubmit = async (e) => {
+const handleResendCredentials =
+  async (customer) => {
 
-        e.preventDefault();
+    const confirmResend =
+      window.confirm(
+        `Send new credentials to ${customer.name}?`
+      );
 
-        await createCustomer(formData);
+    if (!confirmResend)
+      return;
 
-        setFormData({
+    try {
 
-            name: "",
-            email: "",
-            password: "",
-            phone: ""
+      setResendingCustomer(
+        customer._id
+      );
 
-        });
+      const response =
+        await api.post(
+          `/customer/resend-credentials/${customer._id}`
+        );
 
-    };
+      toast.success(
+        response.data.message
+      );
 
+      if (
+        response.data
+          .temporaryPassword
+      ) {
 
-    return (
+        toast(
+          `New Password: ${response.data.temporaryPassword}`,
+          {
+            duration: 15000
+          }
+        );
 
-        <div className="min-h-screen bg-gray-100 p-8">
+      }
 
-            {/* PAGE TITLE */}
-            <h1 className="text-4xl font-bold mb-8">
+    } catch (error) {
 
-                Customers
+      toast.error(
 
-            </h1>
+        error?.response?.data
+          ?.message ||
 
+        "Failed to resend credentials"
 
-            {/* ADD CUSTOMER FORM */}
-            <div className="bg-white p-6 rounded-xl shadow-md mb-10">
+      );
 
-                <h2 className="text-2xl font-bold mb-6">
+    } finally {
 
-                    Add Customer
+      setResendingCustomer(
+        null
+      );
 
-                </h2>
+    }
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                >
+  };
 
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="border p-3 rounded"
-                    />
 
+  const handleSendStatement =
+  async (customer) => {
 
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="border p-3 rounded"
-                    />
+    const confirmSend =
+      window.confirm(
 
+        `Send statement to ${customer.name}?`
 
-                    <input
-                        type="text"
-                        name="phone"
-                        placeholder="Phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="border p-3 rounded"
-                    />
+      );
 
+    if (!confirmSend)
+      return;
 
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="border p-3 rounded"
-                    />
+    try {
 
+      setSendingStatement(
+        customer._id
+      );
 
-                    <button
-                        className="bg-black text-white p-3 rounded md:col-span-2"
-                    >
+      const response =
+        await api.post(
 
-                        {
-                            loading
-                                ? "Creating..."
-                                : "Add Customer"
-                        }
+          `/customer/send-statement/${customer._id}`
 
-                    </button>
+        );
 
-                </form>
+      toast.success(
+        response.data.message
+      );
 
-            </div>
+    } catch (error) {
 
+      toast.error(
 
-            {/* CUSTOMERS TABLE */}
-            <div className="bg-white rounded-xl shadow-md p-6">
+        error?.response?.data
+          ?.message ||
 
-                <h2 className="text-2xl font-bold mb-6">
+        "Failed to send statement"
 
-                    All Customers
+      );
 
-                </h2>
+    } finally {
 
-                <div className="overflow-x-auto">
+      setSendingStatement(
+        null
+      );
 
-                    <table className="w-full border-collapse">
+    }
 
-                        <thead>
+  };
 
-                            <tr className="bg-gray-100">
+  const handleSettleCustomer =
+  async (customer) => {
 
-                                <th className="p-4 text-left">
-                                    Name
-                                </th>
+    const confirmSettle =
+      window.confirm(
 
-                                <th className="p-4 text-left">
-                                    Email
-                                </th>
+        `Settle all outstanding dues for ${customer.name}?`
 
-                                <th className="p-4 text-left">
-                                    Phone
-                                </th>
+      );
 
-                                <th className="p-4 text-left">
-                                    Balance
-                                </th>
+    if (!confirmSettle)
+      return;
 
-                                <th className="p-4 text-left">
-                                    Actions
-                                </th>
+    try {
 
-                            </tr>
+      setSettlingCustomer(
+        customer._id
+      );
+      console.log("Settling customer:", customer._id);
 
-                        </thead>
+      const response =
+        await api.put(
 
+          `/customer/settle/${customer._id}`
 
-                        <tbody>
+        );
+        
 
-                            {
-                                customers.map((customer) => (
+      toast.success(
+        response.data.message
+      );
 
-                                    <tr
-                                        key={customer._id}
-                                        className="border-b"
-                                    >
+      fetchCustomers();
 
-                                        <td className="p-4">
-                                            {customer.name}
-                                        </td>
+    } catch (error) {
 
-                                        <td className="p-4">
-                                            {customer.email}
-                                        </td>
+      toast.error(
 
-                                        <td className="p-4">
-                                            {customer.phone}
-                                        </td>
+        error?.response?.data
+          ?.message ||
 
-                                        <td className="p-4 font-bold">
+        "Failed to settle customer"
 
-                                            ₹ {
-                                                customer.currentBalance
-                                            }
+      );
 
-                                        </td>
+    } finally {
 
+      setSettlingCustomer(
+        null
+      );
 
-                                        {/* ACTION BUTTON */}
-                                        <td className="p-4">
+    }
 
-                                            <button
+  };
 
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/shopkeeper/ledger/${customer._id}`
-                                                    )
-                                                }
 
-                                                className="bg-black text-white px-4 py-2 rounded-lg"
+  const handleWhatsAppShare =
+  (customer) => {
 
-                                            >
+    if (!customer.phone) {
 
-                                                View Ledger
+      toast.error(
+        "Customer phone number not available"
+      );
 
-                                            </button>
+      return;
 
-                                        </td>
+    }
 
-                                    </tr>
+    const phone =
+      `91${customer.phone}`;
 
-                                ))
-                            }
+ const message = `KHATA FLOW PAYMENT REMINDER
 
-                        </tbody>
+Hello ${customer.name},
 
-                    </table>
+This is a reminder regarding your khata account.
 
-                </div>
+--------------------------------
 
-            </div>
+Customer: ${customer.name}
+
+Phone: ${customer.phone}
+
+Outstanding Balance: Rs.${customer.currentBalance}
+
+Due Date: ${
+  customer.nextDueDate
+    ? new Date(
+        customer.nextDueDate
+      ).toLocaleDateString("en-IN")
+    : "N/A"
+}
+
+Overdue Days: ${
+  customer.overdueDays
+}
+
+--------------------------------
+
+Please clear your pending amount at your earliest convenience.
+
+If payment has already been made, kindly ignore this message.
+
+Thank you.
+
+Powered by Khata Flow`;
+
+
+    const whatsappUrl =
+
+`https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+    window.open(
+      whatsappUrl,
+      "_blank"
+    );
+
+  };
+
+  if (loading) {
+
+    return <Loader />;
+
+  }
+
+  return (
+
+    <div className="p-6 bg-slate-50 min-h-screen">
+
+      <div className="flex justify-between items-center mb-8">
+
+        <div>
+
+          <h1 className="text-3xl font-bold">
+
+            Customers
+
+          </h1>
+
+          <p className="text-slate-500">
+
+            Manage your customers
+
+          </p>
 
         </div>
 
-    );
+      </div>
+
+      <div className="bg-white rounded-xl border p-6 mb-8">
+
+        <h2 className="font-semibold text-lg mb-4">
+
+          Add Customer
+
+        </h2>
+
+        <form
+          onSubmit={handleAddCustomer}
+          className="grid md:grid-cols-2 gap-4"
+        >
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Customer Name"
+            value={formData.name}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Customer Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+          />
+
+          <input
+            type="text"
+            name="phone"
+            placeholder="Phone Number"
+            value={formData.phone}
+            onChange={handleChange}
+            className="border rounded-lg p-3"
+          />
+
+          <button
+            type="submit"
+            disabled={
+              creatingCustomer
+            }
+            className="bg-blue-600 text-white rounded-lg p-3"
+          >
+
+            {creatingCustomer
+              ? "Creating..."
+              : "Add Customer"}
+
+          </button>
+
+        </form>
+
+      </div>
+
+      <div className="mb-6">
+
+        <input
+          type="text"
+          placeholder="Search customers..."
+          value={search}
+          onChange={(e) =>
+            setSearch(
+              e.target.value
+            )
+          }
+          className="w-full md:w-96 border rounded-lg p-3"
+        />
+
+      </div>
+
+      <div className="bg-white rounded-xl border overflow-hidden">
+
+        <div className="overflow-x-auto">
+
+          <table className="w-full">
+
+            <thead className="bg-slate-100">
+
+              <tr>
+
+                <th className="text-left p-4">
+                  Name
+                </th>
+
+                <th className="text-left p-4">
+                  Email
+                </th>
+
+                <th className="text-left p-4">
+                  Phone
+                </th>
+
+                <th className="text-left p-4">
+                  Balance
+                </th>
+
+                <th className="text-left p-4">
+                  Actions
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              {filteredCustomers.map(
+                (customer) => (
+
+                  <tr
+                    key={customer._id}
+                    className="border-t"
+                  >
+
+                    <td className="p-4">
+                      {customer.name}
+                    </td>
+
+                    <td className="p-4">
+                      {customer.email}
+                    </td>
+
+                    <td className="p-4">
+                      {customer.phone}
+                    </td>
+
+                    <td className="p-4 font-semibold">
+                      ₹
+                      {
+                        customer.currentBalance
+                      }
+                    </td>
+
+                    <td className="p-4">
+
+                      <div className="flex gap-2 flex-wrap">
+
+  <Link
+    to={`/shopkeeper/ledger/${customer._id}`}
+    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition"
+  >
+    📒 Ledger
+  </Link>
+
+  <button
+    onClick={() =>
+      handleEditClick(customer)
+    }
+    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg transition"
+  >
+    ✏️ Edit
+  </button>
+  <button
+  onClick={() =>
+    handleSettleCustomer(
+      customer
+    )
+  }
+  disabled={
+    settlingCustomer ===
+    customer._id
+  }
+  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg transition"
+>
+  {settlingCustomer ===
+  customer._id
+
+    ? "Settling..."
+
+    : "Settle"}
+
+</button>
+
+{customer.currentBalance > 0 && (
+
+  <button
+    onClick={() =>
+      handleWhatsAppShare(
+        customer
+      )
+    }
+    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition flex items-center gap-2"
+    title="Send WhatsApp Reminder"
+  >
+
+    <FaWhatsapp />
+
+    WhatsApp
+
+  </button>
+
+)}
+
+  <button
+    onClick={() =>
+      handleResendCredentials(customer)
+    }
+    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition"
+  >
+    🔑 Resend
+  </button>
+
+  <button
+    onClick={() =>
+      handleSendStatement(customer)
+    }
+    disabled={
+      sendingStatement ===
+      customer._id
+    }
+    className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg transition"
+  >
+
+    {sendingStatement ===
+    customer._id
+
+      ? "Sending..."
+
+      : "📧 Statement"}
+
+  </button>
+
+  <button
+    onClick={() =>
+      handleDeleteCustomer(
+        customer._id
+      )
+    }
+    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition"
+  >
+    🗑️ Delete
+  </button>
+
+</div>
+                    </td>
+
+                  </tr>
+
+                )
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+      {editingCustomer && (
+
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+
+          <div className="bg-white p-6 rounded-xl w-full max-w-md">
+
+            <h2 className="text-xl font-bold mb-4">
+
+              Edit Customer
+
+            </h2>
+
+            <form
+              onSubmit={
+                handleUpdateCustomer
+              }
+              className="space-y-4"
+            >
+
+              <input
+                type="text"
+                value={
+                  editForm.name
+                }
+                onChange={(e) =>
+                  setEditForm({
+
+                    ...editForm,
+
+                    name:
+                      e.target.value
+
+                  })
+                }
+                className="w-full border rounded-lg p-3"
+              />
+
+              <input
+                type="text"
+                value={
+                  editForm.phone
+                }
+                onChange={(e) =>
+                  setEditForm({
+
+                    ...editForm,
+
+                    phone:
+                      e.target.value
+
+                  })
+                }
+                className="w-full border rounded-lg p-3"
+              />
+
+              <div className="flex gap-3">
+
+                <button
+                  type="submit"
+                  disabled={
+                    updatingCustomer
+                  }
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg"
+                >
+
+                  {updatingCustomer
+                    ? "Updating..."
+                    : "Save"}
+
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setEditingCustomer(
+                      null
+                    )
+                  }
+                  className="flex-1 border py-3 rounded-lg"
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      )}
+
+    </div>
+
+  );
 
 }
 
