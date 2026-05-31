@@ -212,6 +212,20 @@ function Customers() {
         response.data.message
       );
 
+      if (
+        response.data
+          .temporaryPassword
+      ) {
+
+        toast(
+          `Temporary Password: ${response.data.temporaryPassword}`,
+          {
+            duration: 15000
+          }
+        );
+
+      }
+
       setFormData({
 
         name: "",
@@ -744,6 +758,15 @@ Powered by Khata Flow`;
   </button>
 
 )}
+
+  <button
+    onClick={() =>
+      handleResendCredentials(customer)
+    }
+    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition"
+  >
+    🔑 Resend
+  </button>
 
   <button
     onClick={() =>
