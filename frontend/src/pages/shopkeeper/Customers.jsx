@@ -33,8 +33,6 @@ function Customers() {
   
   const [sendingStatement, setSendingStatement] =
     useState(null);
-  const [settlingCustomer, setSettlingCustomer] =
-    useState(null);
 
   const [search, setSearch] =
     useState("");
@@ -213,20 +211,6 @@ function Customers() {
       toast.success(
         response.data.message
       );
-
-      if (
-        response.data
-          .temporaryPassword
-      ) {
-
-        toast(
-          `Temporary Password: ${response.data.temporaryPassword}`,
-          {
-            duration: 15000
-          }
-        );
-
-      }
 
       setFormData({
 
@@ -417,20 +401,6 @@ const handleResendCredentials =
         response.data.message
       );
 
-      if (
-        response.data
-          .temporaryPassword
-      ) {
-
-        toast(
-          `New Password: ${response.data.temporaryPassword}`,
-          {
-            duration: 15000
-          }
-        );
-
-      }
-
     } catch (error) {
 
       toast.error(
@@ -503,62 +473,6 @@ const handleResendCredentials =
     }
 
   };
-
-  const handleSettleCustomer =
-  async (customer) => {
-
-    const confirmSettle =
-      window.confirm(
-
-        `Settle all outstanding dues for ${customer.name}?`
-
-      );
-
-    if (!confirmSettle)
-      return;
-
-    try {
-
-      setSettlingCustomer(
-        customer._id
-      );
-      console.log("Settling customer:", customer._id);
-
-      const response =
-        await api.put(
-
-          `/customer/settle/${customer._id}`
-
-        );
-        
-
-      toast.success(
-        response.data.message
-      );
-
-      fetchCustomers();
-
-    } catch (error) {
-
-      toast.error(
-
-        error?.response?.data
-          ?.message ||
-
-        "Failed to settle customer"
-
-      );
-
-    } finally {
-
-      setSettlingCustomer(
-        null
-      );
-
-    }
-
-  };
-
 
   const handleWhatsAppShare =
   (customer) => {
@@ -810,26 +724,6 @@ Powered by Khata Flow`;
   >
     ✏️ Edit
   </button>
-  <button
-  onClick={() =>
-    handleSettleCustomer(
-      customer
-    )
-  }
-  disabled={
-    settlingCustomer ===
-    customer._id
-  }
-  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg transition"
->
-  {settlingCustomer ===
-  customer._id
-
-    ? "Settling..."
-
-    : "Settle"}
-
-</button>
 
 {customer.currentBalance > 0 && (
 
@@ -850,15 +744,6 @@ Powered by Khata Flow`;
   </button>
 
 )}
-
-  <button
-    onClick={() =>
-      handleResendCredentials(customer)
-    }
-    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition"
-  >
-    🔑 Resend
-  </button>
 
   <button
     onClick={() =>
