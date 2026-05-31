@@ -140,6 +140,19 @@ app.get("/", (req, res) => {
     });
 
 });
+app.get("/email-debug", (req, res) => {
+
+  res.json({
+
+    EMAIL_USER:
+      !!process.env.EMAIL_USER,
+
+    EMAIL_PASS:
+      !!process.env.EMAIL_PASS
+
+  });
+
+});
 
 // 404 Handler
 
@@ -155,6 +168,7 @@ app.use((req, res) => {
     });
 
 });
+
 
 // Global Error Handler
 
