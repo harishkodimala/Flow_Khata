@@ -6,7 +6,6 @@ export const verifyToken = ()=>
     {
         try{
             const token=req.cookies.token;
-            console.log("token from cookie",token);
 
             if(!token){
                 return res.status(401).json({
@@ -15,7 +14,7 @@ export const verifyToken = ()=>
             }
 
             const decoded=jwt.verify(token,process.env.jwt_secret);
-            console.log("decoded token",decoded);
+            
             req.user=decoded;
             next();
         }

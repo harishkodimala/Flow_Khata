@@ -3,35 +3,28 @@ import { config } from "dotenv";
 
 config();
 
-const transporter =
-  nodemailer.createTransport({
 
-    host: "smtp.gmail.com",
+console.log(
+  process.env.EMAIL_USER
+);
 
-    port: 587,
+const transporter = nodemailer.createTransport({
 
-    secure: false,
+  host: "smtp-relay.brevo.com",
 
-    auth: {
+  port: 587,
 
-      user:
-        process.env.EMAIL_USER,
+  secure: false,
 
-      pass:
-        process.env.EMAIL_PASS
+  auth: {
 
-    },
+    user: process.env.BREVO_USER,
 
-    family: 4, // Force IPv4
+    pass: process.env.BREVO_PASS
 
-    tls: {
+  }
 
-      rejectUnauthorized:
-        false
-
-    }
-
-  });
+});
 
   transporter.verify((error, success) => {
 
@@ -63,7 +56,6 @@ export const sendWelcomeEmail =
 
   ) => {
 
-    try {
 
       await transporter.sendMail({
 
@@ -216,14 +208,6 @@ export const sendWelcomeEmail =
         "Welcome email sent successfully"
       );
 
-    } catch (error) {
-
-      console.error(
-        "Email Error:",
-        error.message
-      );
-
-    }
 
   };
 
