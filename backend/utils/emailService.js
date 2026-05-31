@@ -3,47 +3,53 @@ import { config } from "dotenv";
 
 config();
 
+const transporter =
+  nodemailer.createTransport({
 
-console.log(
-  process.env.EMAIL_USER
+    host: "smtp-relay.brevo.com",
+
+    port: 587,
+
+    secure: false,
+
+    auth: {
+
+      user:
+        process.env.BREVO_USER,
+
+      pass:
+        process.env.BREVO_PASS
+
+    }
+
+  });
+
+// Verify SMTP Connection
+
+transporter.verify(
+
+  (error) => {
+
+    if (error) {
+
+      console.error(
+        "SMTP ERROR:",
+        error.message
+      );
+
+    } else {
+
+      console.log(
+        "SMTP READY"
+      );
+
+    }
+
+  }
+
 );
 
-const transporter = nodemailer.createTransport({
-
-  host: "smtp-relay.brevo.com",
-
-  port: 587,
-
-  secure: false,
-
-  auth: {
-
-    user: process.env.BREVO_USER,
-
-    pass: process.env.BREVO_PASS
-
-  }
-
-});
-
-  transporter.verify((error, success) => {
-
-  if (error) {
-
-    console.log(
-      "SMTP ERROR:",
-      error
-    );
-
-  } else {
-
-    console.log(
-      "SMTP READY"
-    );
-
-  }
-
-});
+// Welcome Email
 
 export const sendWelcomeEmail =
   async (
@@ -56,11 +62,12 @@ export const sendWelcomeEmail =
 
   ) => {
 
+    try {
 
       await transporter.sendMail({
 
         from:
-          `"Khata Flow" <${process.env.EMAIL_USER}>`,
+          `"Khata Flow" <${process.env.BREVO_USER}>`,
 
         to:
           customerEmail,
@@ -86,17 +93,9 @@ export const sendWelcomeEmail =
             border-radius:12px 12px 0 0;
           ">
 
-            <h1 style="
-              margin:0;
-              font-size:30px;
-            ">
-              Khata Flow
-            </h1>
+            <h1>Khata Flow</h1>
 
-            <p style="
-              margin-top:10px;
-              opacity:0.9;
-            ">
+            <p>
               Customer Account Created Successfully
             </p>
 
@@ -115,9 +114,10 @@ export const sendWelcomeEmail =
 
             <p>
 
-              Welcome to <strong>Khata Flow</strong>.
-
-              Your account has been created by your shopkeeper.
+              Welcome to
+              <strong>
+                Khata Flow
+              </strong>
 
             </p>
 
@@ -125,76 +125,64 @@ export const sendWelcomeEmail =
               background:#f1f5f9;
               padding:20px;
               border-radius:10px;
-              margin:25px 0;
-            ">
-
-              <p>
-                <strong>Email:</strong>
-                ${customerEmail}
-              </p>
-
-              <p>
-                <strong>Temporary Password:</strong>
-                ${temporaryPassword}
-              </p>
-
-            </div>
-
-            <div style="
-              background:#fef2f2;
-              border-left:4px solid #dc2626;
-              padding:15px;
               margin:20px 0;
             ">
 
-              <strong>
-                Important:
-              </strong>
+              <p>
 
-              Please change your password immediately after your first login.
+                <strong>
+                  Email:
+                </strong>
+
+                ${customerEmail}
+
+              </p>
+
+              <p>
+
+                <strong>
+                  Temporary Password:
+                </strong>
+
+                ${temporaryPassword}
+
+              </p>
 
             </div>
 
-            <div style="
-              text-align:center;
-              margin-top:30px;
-            ">
+            <p>
+
+              Please change your
+              password after first login.
+
+            </p>
+
+            <div
+              style="
+                text-align:center;
+                margin-top:30px;
+              "
+            >
 
               <a
+
                 href="${process.env.CLIENT_URL}/login"
+
                 style="
                   background:#2563eb;
                   color:white;
                   padding:12px 24px;
-                  text-decoration:none;
                   border-radius:8px;
-                  display:inline-block;
-                  font-weight:bold;
+                  text-decoration:none;
                 "
+
               >
 
-                Login to Khata Flow
+                Login Now
 
               </a>
 
             </div>
-
-          </div>
-
-          <div style="
-            text-align:center;
-            padding:20px;
-            color:#64748b;
-            font-size:14px;
-          ">
-
-            <p>
-              Thank you for using Khata Flow
-            </p>
-
-            <p>
-              © 2026 Khata Flow
-            </p>
 
           </div>
 
@@ -205,12 +193,21 @@ export const sendWelcomeEmail =
       });
 
       console.log(
-        "Welcome email sent successfully"
+        "Welcome email sent"
       );
 
+    } catch (error) {
+
+      console.error(
+        "Welcome Email Error:",
+        error.message
+      );
+
+    }
 
   };
 
+// Statement Email
 
 export const sendStatementEmail =
   async (
@@ -228,7 +225,7 @@ export const sendStatementEmail =
       await transporter.sendMail({
 
         from:
-          `"Khata Flow" <${process.env.EMAIL_USER}>`,
+          `"Khata Flow" <${process.env.BREVO_USER}>`,
 
         to:
           customerEmail,
@@ -240,7 +237,6 @@ export const sendStatementEmail =
 
           <div style="
             font-family:Arial,sans-serif;
-            padding:20px;
           ">
 
             <h2>
@@ -256,21 +252,8 @@ export const sendStatementEmail =
 
             <p>
 
-              Please review your
-              transaction history
-              and current balance.
-
-            </p>
-
-            <br>
-
-            <p>
-
-              Thank you,
-
-              <br>
-
-              Khata Flow Team
+              Thank you for using
+              Khata Flow.
 
             </p>
 
@@ -295,7 +278,7 @@ export const sendStatementEmail =
       });
 
       console.log(
-        "Statement email sent successfully"
+        "Statement email sent"
       );
 
     } catch (error) {
@@ -305,18 +288,21 @@ export const sendStatementEmail =
         error.message
       );
 
-      throw error;
-
     }
 
   };
 
+// Contact Form Email
 
-  export const sendContactEmail =
+export const sendContactEmail =
   async (
+
     name,
+
     email,
+
     message
+
   ) => {
 
     try {
@@ -324,29 +310,51 @@ export const sendStatementEmail =
       await transporter.sendMail({
 
         from:
-          process.env.EMAIL_USER,
+          `"Khata Flow" <${process.env.BREVO_USER}>`,
 
         to:
-          process.env.EMAIL_USER,
+          process.env.BREVO_USER,
 
         subject:
           `Khata Flow Contact - ${name}`,
 
         html: `
 
-          <h2>New Contact Message</h2>
+          <h2>
+            New Contact Message
+          </h2>
 
-          <p><strong>Name:</strong> ${name}</p>
+          <p>
 
-          <p><strong>Email:</strong> ${email}</p>
+            <strong>Name:</strong>
+            ${name}
 
-          <p><strong>Message:</strong></p>
+          </p>
 
-          <p>${message}</p>
+          <p>
+
+            <strong>Email:</strong>
+            ${email}
+
+          </p>
+
+          <p>
+
+            <strong>Message:</strong>
+
+          </p>
+
+          <p>
+            ${message}
+          </p>
 
         `
 
       });
+
+      console.log(
+        "Contact email sent"
+      );
 
     } catch (error) {
 
@@ -354,8 +362,6 @@ export const sendStatementEmail =
         "Contact Email Error:",
         error.message
       );
-
-      throw error;
 
     }
 
