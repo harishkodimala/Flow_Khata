@@ -312,13 +312,13 @@ function Settings() {
 
   return (
 
-    <div className="min-h-screen bg-slate-50 p-6">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6">
 
       {/* Header */}
 
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-8 text-white mb-8 shadow-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-5 md:p-8 text-white mb-8 shadow-lg">
 
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-3xl md:text-4xl font-bold">
 
           Settings
 
@@ -332,11 +332,11 @@ function Settings() {
 
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 md:p-6">
 
         {/* Profile Section */}
 
-        <div className="bg-white border rounded-2xl p-6 shadow-sm">
+        <div className="bg-white border rounded-2xl p-4 md:p-6 shadow-sm">
 
           <h2 className="text-2xl font-bold mb-6">
 
@@ -441,7 +441,7 @@ function Settings() {
 
         {/* Password Section */}
 
-        <div className="bg-white border rounded-2xl p-6 shadow-sm">
+        <div className="bg-white border rounded-2xl p-4 md:p-6 shadow-sm">
 
           <h2 className="text-2xl font-bold mb-6">
 

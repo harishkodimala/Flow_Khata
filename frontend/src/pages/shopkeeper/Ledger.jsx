@@ -233,17 +233,17 @@ function Ledger() {
 
   return (
 
-    <div className="p-6 bg-slate-50 min-h-screen">
+    <div className="p-4 md:p-6 bg-slate-50 min-h-screen">
 
       {/* Customer Card */}
 
-      <div className="bg-white rounded-2xl border shadow-sm p-6 mb-6">
+      <div className="bg-white rounded-2xl border shadow-sm p-4 md:p-6 mb-6">
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
           <div>
 
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-2xl md:text-3xl font-bold">
 
               {customer.name}
 
@@ -255,7 +255,7 @@ function Ledger() {
 
             </p>
 
-            <h2 className="text-4xl font-bold text-red-600 mt-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-red-600 mt-4">
 
               ₹{customer.currentBalance}
 
@@ -343,7 +343,7 @@ function Ledger() {
 
       {/* Add Transaction */}
 
-      <div className="bg-white rounded-xl border p-6 mb-6 shadow-sm">
+      <div className="bg-white rounded-xl border p-4 md:p-6 mb-6 shadow-sm">
 
         <h2 className="font-semibold text-lg mb-4">
 

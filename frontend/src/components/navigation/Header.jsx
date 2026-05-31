@@ -42,6 +42,7 @@ function Header() {
         { name: "Customers", path: "/shopkeeper/customers" },
         { name: "Analytics", path: "/shopkeeper/analytics" },
         { name: "Settings", path: "/shopkeeper/settings" },
+        { name: "How It Works", path: "/how-it-works" },
       ];
     } else if (currentUser.role === "CUSTOMER") {
       navLinks = [
@@ -274,4 +275,7 @@ function Header() {
   );
 }
 
-export default Header;
+export default Header;
+
+
+/* ADD TO NAV LINKS: { name: 'How It Works', path: '/how-it-works' } */

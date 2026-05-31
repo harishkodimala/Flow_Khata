@@ -33,6 +33,7 @@ import { useAuth } from "./store/authStore";
 
 import { Toaster } from "react-hot-toast";
 import ErrorBoundary from "./components/ErrorBoundary";
+import HowItWorks from "./pages//HowItWorks";
 
 const routerObj = createBrowserRouter([
   {
@@ -71,7 +72,10 @@ const routerObj = createBrowserRouter([
           </PublicRoute>
         )
       },
-
+      {
+        path: "how-it-works",
+        element: <HowItWorks />
+      },
       {
         path: "register",
         element: (

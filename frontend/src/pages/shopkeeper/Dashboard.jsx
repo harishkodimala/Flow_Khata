@@ -67,7 +67,7 @@ function Dashboard() {
 
     {
       title: "Outstanding",
-      value: `₹${dashboard.totalBalance}`,
+      value: `₹${new Intl.NumberFormat("en-IN").format(dashboard.totalBalance)}`,
       icon: <FaWallet />,
       color:
         "bg-red-100 text-red-600",
@@ -75,7 +75,7 @@ function Dashboard() {
 
     {
       title: "Credit Today",
-      value: `₹${dashboard.creditsGivenToday}`,
+      value: `₹${new Intl.NumberFormat("en-IN").format(dashboard.creditsGivenToday)}`,
       icon: <FaArrowUp />,
       color:
         "bg-orange-100 text-orange-600",
@@ -83,7 +83,7 @@ function Dashboard() {
 
     {
       title: "Collected Today",
-      value: `₹${dashboard.paymentsReceivedToday}`,
+      value: `₹${new Intl.NumberFormat("en-IN").format(dashboard.paymentsReceivedToday)}`,
       icon: <FaArrowDown />,
       color:
         "bg-green-100 text-green-600",
@@ -93,7 +93,7 @@ function Dashboard() {
 
   return (
 
-    <div className="min-h-screen bg-slate-50 p-6">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6">
 
       {/* Header */}
 
@@ -101,13 +101,13 @@ function Dashboard() {
 
         <h1 className="text-4xl font-bold">
 
-          Dashboard
+          Welcome Back 👋
 
         </h1>
 
         <p className="mt-2 text-blue-100">
 
-          Welcome back. Here's what's happening in your business today.
+          Track customers, balances and transactions at a glance.
 
         </p>
 

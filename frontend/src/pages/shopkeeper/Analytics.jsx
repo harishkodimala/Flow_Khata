@@ -112,13 +112,13 @@ function Analytics() {
 
   return (
 
-    <div className="min-h-screen bg-slate-50 p-6">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-6">
 
       {/* Header */}
 
-      <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-3xl p-8 text-white mb-8 shadow-lg">
+      <div className="bg-linear-to-r from-indigo-600 to-blue-600 rounded-3xl p-5 md:p-8 text-white mb-8 shadow-lg">
 
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-3xl md:text-4xl font-bold">
 
           Analytics Dashboard
 
@@ -134,13 +134,13 @@ function Analytics() {
 
       {/* KPI Cards */}
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4 mb-8">
+      <div className="grid gap-4 md:p-6 md:grid-cols-2 xl:grid-cols-4 mb-8">
 
         {stats.map((item) => (
 
           <div
             key={item.title}
-            className="bg-white rounded-2xl p-6 border shadow-sm hover:shadow-lg transition"
+            className="bg-white rounded-2xl p-4 md:p-6 border shadow-sm hover:shadow-lg transition"
           >
 
             <div className="flex justify-between items-center">
@@ -153,7 +153,7 @@ function Analytics() {
 
                 </p>
 
-                <h2 className="text-3xl font-bold mt-2">
+                <h2 className="text-2xl md:text-3xl font-bold mt-2">
 
                   {item.value}
 
@@ -179,7 +179,7 @@ function Analytics() {
 
       {/* Daily Trends */}
 
-      <div className="bg-white p-6 rounded-2xl border shadow-sm mb-8">
+      <div className="bg-white p-4 md:p-6 rounded-2xl border shadow-sm mb-8">
 
         <h2 className="text-xl font-bold mb-5">
 
@@ -224,11 +224,11 @@ function Analytics() {
 
       {/* Pie + Growth */}
 
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid lg:grid-cols-2 gap-4 md:p-6 mb-8">
 
         {/* Paid vs Pending */}
 
-        <div className="bg-white p-6 rounded-2xl border shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border shadow-sm">
 
           <h2 className="text-xl font-bold mb-5">
 
@@ -277,7 +277,7 @@ function Analytics() {
 
         {/* Growth */}
 
-        <div className="bg-white p-6 rounded-2xl border shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border shadow-sm">
 
           <h2 className="text-xl font-bold mb-5">
 
@@ -325,7 +325,7 @@ function Analytics() {
 
       {/* Customer Insights */}
 
-      <div className="bg-white rounded-2xl border shadow-sm p-6">
+      <div className="bg-white rounded-2xl border shadow-sm p-4 md:p-6">
 
         <h2 className="text-xl font-bold mb-5">
 
