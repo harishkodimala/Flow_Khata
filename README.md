@@ -186,6 +186,7 @@ npm start
 * Advanced Analytics
 * Multi-Shop Support
 * Mobile Application
+* Payment Integration
 
 ---
 
