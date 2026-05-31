@@ -33,6 +33,7 @@ function Header() {
     { name: "About", path: "/about" },
     { name: "Features", path: "/features" },
     { name: "Contact", path: "/contact" },
+    { name: "How It Works", path: "/how-it-works" },
   ];
 
   if (isAuthenticated && currentUser) {
@@ -42,7 +43,6 @@ function Header() {
         { name: "Customers", path: "/shopkeeper/customers" },
         { name: "Analytics", path: "/shopkeeper/analytics" },
         { name: "Settings", path: "/shopkeeper/settings" },
-        { name: "How It Works", path: "/how-it-works" },
       ];
     } else if (currentUser.role === "CUSTOMER") {
       navLinks = [
