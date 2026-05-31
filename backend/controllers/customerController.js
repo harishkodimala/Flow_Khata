@@ -629,6 +629,11 @@ export const sendStatement =
 
     } catch (error) {
 
+      console.error(
+        "Send Statement Error:",
+        error.message
+      );
+
       res.status(500).json({
 
         message:
