@@ -592,7 +592,7 @@ Powered by Khata Flow`;
 
         <form
           onSubmit={handleAddCustomer}
-          className="grid md:grid-cols-2 gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
 
           <input
@@ -683,6 +683,10 @@ Powered by Khata Flow`;
                 </th>
 
                 <th className="text-left p-4">
+                  Status
+                </th>
+
+                <th className="text-left p-4">
                   Actions
                 </th>
 
@@ -721,11 +725,33 @@ Powered by Khata Flow`;
 
                     <td className="p-4">
 
+                      {customer.currentBalance > 0 ? (
+
+                        <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
+
+                          Pending
+
+                        </span>
+
+                      ) : (
+
+                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+
+                          Clear
+
+                        </span>
+
+                      )}
+
+                    </td>
+
+                    <td className="p-4">
+
                       <div className="flex gap-2 flex-wrap">
 
   <Link
     to={`/shopkeeper/ledger/${customer._id}`}
-    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition"
+    className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 text-sm rounded-lg transition"
   >
     📒 Ledger
   </Link>
@@ -734,7 +760,7 @@ Powered by Khata Flow`;
     onClick={() =>
       handleEditClick(customer)
     }
-    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg transition"
+    className="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 text-sm rounded-lg transition"
   >
     ✏️ Edit
   </button>
@@ -747,7 +773,7 @@ Powered by Khata Flow`;
         customer
       )
     }
-    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition flex items-center gap-2"
+    className="bg-green-600 hover:bg-green-700 text-white px-2 py-1 text-sm rounded-lg transition flex items-center gap-2"
     title="Send WhatsApp Reminder"
   >
 
@@ -763,7 +789,7 @@ Powered by Khata Flow`;
     onClick={() =>
       handleResendCredentials(customer)
     }
-    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg transition"
+    className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 text-sm rounded-lg transition"
   >
     🔑 Resend
   </button>
@@ -776,7 +802,7 @@ Powered by Khata Flow`;
       sendingStatement ===
       customer._id
     }
-    className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg transition"
+    className="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 text-sm rounded-lg transition"
   >
 
     {sendingStatement ===
@@ -794,7 +820,7 @@ Powered by Khata Flow`;
         customer._id
       )
     }
-    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg transition"
+    className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-sm rounded-lg transition"
   >
     🗑️ Delete
   </button>
