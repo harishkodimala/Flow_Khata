@@ -466,8 +466,14 @@ const handleResendCredentials =
       toast.success(
         response.data.message
       );
+      console.log(
+        "Send Statement Response:",
+        response.data
+      );
 
     } catch (error) {
+
+      console.log("Send Statement Error:", error);
 
       toast.error(
 
