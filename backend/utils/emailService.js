@@ -3,74 +3,64 @@ import { config } from "dotenv";
 
 config();
 
-const transporter =
-  nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
 
-    host: "smtp-relay.brevo.com",
+  host: "smtp-relay.brevo.com",
 
-    port: 2525,
+  port: 2525,
 
-    secure: false,
+  secure: false,
 
-    auth: {
+  auth: {
 
-      user:
-        process.env.BREVO_USER,
+    user: process.env.BREVO_USER,
 
-      pass:
-        process.env.BREVO_PASS
-
-    }
-
-  });
-
-// Verify SMTP Connection
-
-transporter.verify(
-
-  (error) => {
-
-    if (error) {
-
-      console.error(
-        "SMTP ERROR:",
-        error.message
-      );
-
-    } else {
-
-      console.log(
-        "SMTP READY"
-      );
-
-    }
+    pass: process.env.BREVO_PASS
 
   }
 
-);
+});
+
+// Verify SMTP
+
+transporter.verify((error) => {
+
+  if (error) {
+
+    console.error(
+      "SMTP ERROR:",
+      error.message
+    );
+
+  } else {
+
+    console.log(
+      "SMTP READY"
+    );
+
+  }
+
+});
 
 // Welcome Email
 
-export const sendWelcomeEmail =
-  async (
+export const sendWelcomeEmail = async (
 
-    customerEmail,
+  customerEmail,
 
-    customerName,
+  customerName,
 
-    temporaryPassword
+  temporaryPassword
 
-  ) => {
+) => {
 
-    try {
+  try {
 
-      console.log("BREVO_USER:", process.env.BREVO_USER);
-      console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
-
+    const info =
       await transporter.sendMail({
 
         from:
-          `"Khata Flow" <${process.env.BREVO_USER}>`,
+          `"Khata Flow" <${process.env.SENDER_EMAIL}>`,
 
         to:
           customerEmail,
@@ -79,293 +69,175 @@ export const sendWelcomeEmail =
           "Welcome to Khata Flow",
 
         html: `
+          <h2>Hello ${customerName}</h2>
 
-        <div style="
-          max-width:600px;
-          margin:auto;
-          font-family:Arial,sans-serif;
-          background:#f8fafc;
-          padding:30px;
-        ">
+          <p>
+            Welcome to Khata Flow.
+          </p>
 
-          <div style="
-            background:#2563eb;
-            color:white;
-            padding:25px;
-            text-align:center;
-            border-radius:12px 12px 0 0;
-          ">
+          <p>
+            Email:
+            ${customerEmail}
+          </p>
 
-            <h1>Khata Flow</h1>
+          <p>
+            Temporary Password:
+            ${temporaryPassword}
+          </p>
 
-            <p>
-              Customer Account Created Successfully
-            </p>
+          <p>
+            Please change your password after login.
+          </p>
 
-          </div>
-
-          <div style="
-            background:white;
-            padding:30px;
-            border:1px solid #e5e7eb;
-            border-top:none;
-          ">
-
-            <h2>
-              Hello ${customerName},
-            </h2>
-
-            <p>
-
-              Welcome to
-              <strong>
-                Khata Flow
-              </strong>
-
-            </p>
-
-            <div style="
-              background:#f1f5f9;
-              padding:20px;
-              border-radius:10px;
-              margin:20px 0;
-            ">
-
-              <p>
-
-                <strong>
-                  Email:
-                </strong>
-
-                ${customerEmail}
-
-              </p>
-
-              <p>
-
-                <strong>
-                  Temporary Password:
-                </strong>
-
-                ${temporaryPassword}
-
-              </p>
-
-            </div>
-
-            <p>
-
-              Please change your
-              password after first login.
-
-            </p>
-
-            <div
-              style="
-                text-align:center;
-                margin-top:30px;
-              "
-            >
-
-              <a
-
-                href="${process.env.CLIENT_URL}/login"
-
-                style="
-                  background:#2563eb;
-                  color:white;
-                  padding:12px 24px;
-                  border-radius:8px;
-                  text-decoration:none;
-                "
-
-              >
-
-                Login Now
-
-              </a>
-
-            </div>
-
-          </div>
-
-        </div>
-
+          <a href="${process.env.CLIENT_URL}/login">
+            Login
+          </a>
         `
 
       });
 
-      console.log(
-        "Welcome email sent"
-      );
+    console.log(
+      "Message ID:",
+      info.messageId
+    );
 
-    } catch (error) {
+    console.log(
+      "Welcome email sent"
+    );
 
-      console.error(
-        "Welcome Email Error:",
-        error.message
-      );
+  } catch (error) {
 
-    }
+    console.error(
+      "Welcome Email Error:",
+      error.message
+    );
 
-  };
+  }
+
+};
 
 // Statement Email
 
-export const sendStatementEmail =
-  async (
+export const sendStatementEmail = async (
 
-    customerEmail,
+  customerEmail,
 
-    customerName,
+  customerName,
 
-    pdfPath
+  pdfPath
 
-  ) => {
+) => {
 
-    try {
+  try {
 
-      await transporter.sendMail({
+    await transporter.sendMail({
 
-        from:
-          `"Khata Flow" <${process.env.BREVO_USER}>`,
+      from:
+        `"Khata Flow" <${process.env.SENDER_EMAIL}>`,
 
-        to:
-          customerEmail,
+      to:
+        customerEmail,
 
-        subject:
-          "Your Khata Statement",
+      subject:
+        "Your Khata Statement",
 
-        html: `
+      html: `
+        <h2>Hello ${customerName}</h2>
 
-          <div style="
-            font-family:Arial,sans-serif;
-          ">
+        <p>
+          Attached is your latest Khata Statement.
+        </p>
+      `,
 
-            <h2>
-              Hello ${customerName},
-            </h2>
+      attachments: [
 
-            <p>
+        {
 
-              Attached is your latest
-              Khata Statement.
+          filename:
+            "Khata-Statement.pdf",
 
-            </p>
+          path:
+            pdfPath
 
-            <p>
+        }
 
-              Thank you for using
-              Khata Flow.
+      ]
 
-            </p>
+    });
 
-          </div>
+    console.log(
+      "Statement email sent"
+    );
 
-        `,
+  } catch (error) {
 
-        attachments: [
+    console.error(
+      "Statement Email Error:",
+      error.message
+    );
 
-          {
+  }
 
-            filename:
-              "Khata-Statement.pdf",
+};
 
-            path:
-              pdfPath
+// Contact Form
 
-          }
+export const sendContactEmail = async (
 
-        ]
+  name,
 
-      });
+  email,
 
-      console.log(
-        "Statement email sent"
-      );
+  message
 
-    } catch (error) {
+) => {
 
-      console.error(
-        "Statement Email Error:",
-        error.message
-      );
+  try {
 
-    }
+    await transporter.sendMail({
 
-  };
+      from:
+        `"Khata Flow" <${process.env.SENDER_EMAIL}>`,
 
-// Contact Form Email
+      to:
+        process.env.SENDER_EMAIL,
 
-export const sendContactEmail =
-  async (
+      subject:
+        `Khata Flow Contact - ${name}`,
 
-    name,
+      html: `
+        <h2>New Contact Message</h2>
 
-    email,
+        <p>
+          Name: ${name}
+        </p>
 
-    message
+        <p>
+          Email: ${email}
+        </p>
 
-  ) => {
+        <p>
+          Message:
+        </p>
 
-    try {
+        <p>
+          ${message}
+        </p>
+      `
 
-      await transporter.sendMail({
+    });
 
-        from:
-          `"Khata Flow" <${process.env.BREVO_USER}>`,
+    console.log(
+      "Contact email sent"
+    );
 
-        to:
-          process.env.BREVO_USER,
+  } catch (error) {
 
-        subject:
-          `Khata Flow Contact - ${name}`,
+    console.error(
+      "Contact Email Error:",
+      error.message
+    );
 
-        html: `
+  }
 
-          <h2>
-            New Contact Message
-          </h2>
-
-          <p>
-
-            <strong>Name:</strong>
-            ${name}
-
-          </p>
-
-          <p>
-
-            <strong>Email:</strong>
-            ${email}
-
-          </p>
-
-          <p>
-
-            <strong>Message:</strong>
-
-          </p>
-
-          <p>
-            ${message}
-          </p>
-
-        `
-
-      });
-
-      console.log(
-        "Contact email sent"
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Contact Email Error:",
-        error.message
-      );
-
-    }
-
-  };
+};
