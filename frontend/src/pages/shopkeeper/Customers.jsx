@@ -212,19 +212,19 @@ function Customers() {
         response.data.message
       );
 
-      if (
-        response.data
-          .temporaryPassword
-      ) {
+      // if (
+      //   response.data
+      //     .temporaryPassword
+      // ) {
 
-        toast(
-          `Temporary Password: ${response.data.temporaryPassword}`,
-          {
-            duration: 15000
-          }
-        );
+      //   toast(
+      //     `Temporary Password: ${response.data.temporaryPassword}`,
+      //     {
+      //       duration: 15000
+      //     }
+      //   );
 
-      }
+      // }
 
       setFormData({
 
