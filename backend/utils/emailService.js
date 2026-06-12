@@ -2,6 +2,9 @@ import nodemailer from "nodemailer";
 import { config } from "dotenv";
 
 config();
+console.log("BREVO_USER:", process.env.BREVO_USER);
+console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
+console.log("SENDER_EMAIL:", process.env.SENDER_EMAIL);
 
 const transporter = nodemailer.createTransport({
 
@@ -129,6 +132,18 @@ export const sendStatementEmail = async (
 ) => {
 
   try {
+
+    import fs from "fs";
+
+console.log(
+  "PDF EXISTS:",
+  fs.existsSync(pdfPath)
+);
+
+console.log(
+  "PDF PATH:",
+  pdfPath
+);
 
     await transporter.sendMail({
 
