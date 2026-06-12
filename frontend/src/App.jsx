@@ -34,6 +34,9 @@ import { useAuth } from "./store/authStore";
 import { Toaster } from "react-hot-toast";
 import ErrorBoundary from "./components/ErrorBoundary";
 import HowItWorks from "./pages//HowItWorks";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import Shopkeepers from "./pages/admin/Shopkeepers";
+import AdminCustomers from "./pages/admin/AdminCustomers";
 
 const routerObj = createBrowserRouter([
   {
@@ -151,6 +154,46 @@ const routerObj = createBrowserRouter([
           </ProtectedRoute>
         )
       },
+      /* Admin Routes */
+
+{
+  path: "admin/dashboard",
+  element: (
+    <ProtectedRoute
+      allowedRoles={[
+        "ADMIN"
+      ]}
+    >
+      <AdminDashboard />
+    </ProtectedRoute>
+  )
+},
+
+{
+  path: "admin/shopkeepers",
+  element: (
+    <ProtectedRoute
+      allowedRoles={[
+        "ADMIN"
+      ]}
+    >
+      <Shopkeepers />
+    </ProtectedRoute>
+  )
+},
+
+{
+  path: "admin/customers",
+  element: (
+    <ProtectedRoute
+      allowedRoles={[
+        "ADMIN"
+      ]}
+    >
+      <AdminCustomers />
+    </ProtectedRoute>
+  )
+},
 
       /* Customer Routes */
 

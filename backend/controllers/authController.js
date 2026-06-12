@@ -57,6 +57,7 @@ export const loginUser = async (req, res) => {
 
     // Check user
     const user = await User.findOne({ email });
+    console.log("User from login controller :", user);
 
     if (!user) {
       return res.status(404).json({

@@ -145,3 +145,25 @@ POST http://localhost:5000/customer/settle/6a1a673fcaa822fa0197a332
 
 ###customer test api
 GET http://localhost:5000/customer/test
+
+###admin login
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin"
+}
+
+###admin dashboard
+GET http://localhost:5000/admin/dashboard
+
+### admin get all shopkeepers
+GET http://localhost:5000/admin/shopkeepers
+
+
+### admin delete shopkeeper
+DELETE http://localhost:5000/admin/shopkeeper/6a1a673fcaa822fa0197a332
+
+###get all customers (admin)
+GET http://localhost:5000/admin/customers

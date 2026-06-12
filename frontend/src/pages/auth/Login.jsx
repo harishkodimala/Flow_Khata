@@ -117,6 +117,17 @@ function Login() {
                 "/customer/profile"
             );
 
+        } else if (
+
+            currentUser?.role ===
+            "ADMIN"
+
+        ) {
+
+            navigate(
+                "/admin/dashboard"
+            );
+
         } else {
 
             toast.error(

@@ -20,6 +20,11 @@ function ProtectedRoute({
         initialized
 
     } = useAuth();
+    if (!initialized) {
+
+    return <Loader />;
+
+}
 
     const location = useLocation();
 

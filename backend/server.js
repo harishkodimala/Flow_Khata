@@ -9,6 +9,7 @@ import { customerRouter } from "./routes/customerRoute.js";
 import { transactionRouter } from "./routes/transactionRoute.js";
 import { dashboardRoutes } from "./routes/dashboardRoutes.js";
 import { settingsRouter } from "./routes/settingRoutes.js";
+import { adminRouter } from "./routes/adminRoute.js";
 
 import { connectDB } from "./config/db.js";
 
@@ -124,6 +125,11 @@ app.use(
 app.use(
     "/settings",
     settingsRouter
+);
+
+app.use(
+    "/admin",
+    adminRouter
 );
 
 // Health Check Route
