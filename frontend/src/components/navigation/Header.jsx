@@ -50,6 +50,13 @@ function Header() {
         { name: "Transactions", path: "/customer/transactions" },
       ];
     }
+    else if (currentUser.role === "ADMIN") {
+      navLinks = [
+        { name: "Dashboard", path: "/admin/dashboard" },
+        { name: "Shopkeepers", path: "/admin/shopkeepers" },
+        { name: "Customers", path: "/admin/customers" },
+      ];
+    }
   }
 
   const getLogoPath = () => {
