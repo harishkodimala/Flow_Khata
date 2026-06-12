@@ -6,7 +6,6 @@ config();
 console.log("BREVO_USER:", process.env.BREVO_USER);
 console.log("BREVO_PASS EXISTS:", !!process.env.BREVO_PASS);
 console.log("SENDER_EMAIL:", process.env.SENDER_EMAIL);
-
 const transporter = nodemailer.createTransport({
 
   host: "smtp-relay.brevo.com",
@@ -15,31 +14,40 @@ const transporter = nodemailer.createTransport({
 
   secure: false,
 
+  requireTLS: true,
+
   auth: {
 
     user: process.env.BREVO_USER,
 
     pass: process.env.BREVO_PASS
 
-  }
+  },
+
+  connectionTimeout: 30000,
+
+  greetingTimeout: 30000,
+
+  socketTimeout: 30000
 
 });
 
 // Verify SMTP
 
-transporter.verify((error) => {
+transporter.verify((error, success) => {
 
   if (error) {
 
     console.error(
-      "SMTP ERROR:",
-      error.message
+      "FULL SMTP ERROR:",
+      error
     );
 
   } else {
 
     console.log(
-      "SMTP READY"
+      "SMTP READY",
+      success
     );
 
   }
