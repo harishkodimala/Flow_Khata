@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { config } from "dotenv";
+import fs from "fs";
 
 config();
 console.log("BREVO_USER:", process.env.BREVO_USER);
@@ -132,8 +133,6 @@ export const sendStatementEmail = async (
 ) => {
 
   try {
-
-    import fs from "fs";
 
 console.log(
   "PDF EXISTS:",
